@@ -83,7 +83,7 @@ export default {
     },
   },
   setup(props, { emit }) {
-    console.log('??',props.visible)``
+    console.log('??',props.visible)
     const state = reactive({
       modalVisible: props.visible,
     });
