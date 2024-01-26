@@ -1,11 +1,4 @@
 <script lang="ts" setup>
-// import PersonalInfoAgreement from '@/views/client/issue/components/PersonalInfoAgreement.vue';
-// import { getInstance } from '@/composable';
-// import { computed, defineComponent, PropType, toRefs } from '@vue/composition-api';
-// import useThumbnail from '@/views/client/tc/modules/thumbnail/useThumbnail';
-// import IconBase from '@/views/client/tc/modules/iconBase/IconBase.vue';
-// import IconDownload from '@/views/client/tc/modules/iconBase/icons/IconDownload.vue';
-// import IconGarbage from '@/views/client/tc/modules/iconBase/icons/IconGarbage.vue';
 
 import {computed, type PropType, ref, toRefs} from 'vue';
 import useThumbnail from '@/components/thumbnail/useThumbnail';
@@ -74,7 +67,7 @@ const handleDownloadImage = (thumbnail) => {
         <div style class="thumbnail" @click="handleOpenModal(item)">
           <slot v-if="isCustomizeBody" name="customize-body"></slot>
           <template v-else>
-            <img v-lazysizes class="thumbnail-img" :src="item.src" :class="'rotate'" />
+            <img class="thumbnail-img" :src="item.src" :class="'rotate'" />
             <div v-if="isRemoveThumbnail" class="remove" @click.stop="handleRemoveImg(idx)">
               <icon-base icon-name="제거"><IconGarbage /></icon-base>
             </div>

@@ -27,7 +27,6 @@ import Modal from '@/components/modal/Modal.vue';
 import {reactive, toRefs} from 'vue';
 
 export default {
-
   components: {
     Modal,
   },

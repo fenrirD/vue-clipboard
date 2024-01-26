@@ -48,6 +48,7 @@ import {reactive, toRefs, watch} from 'vue';
 
 export default {
   name: 'Modal',
+  emits:['closeModal'],
   props: {
     id: {
       type: String,

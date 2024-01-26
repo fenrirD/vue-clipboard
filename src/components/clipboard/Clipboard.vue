@@ -67,6 +67,7 @@
 
 import {computed, defineComponent, onMounted, onUnmounted, reactive, toRefs} from 'vue';
 import Thumbnail from '@/components/thumbnail/Thumbnail.vue';
+import useClipboard from '@/components/clipboard/useClipboard';
 
 export default defineComponent({
   name: 'Clipboard',
@@ -83,133 +84,21 @@ export default defineComponent({
     },
   },
   setup(props, { emit }) {
+    // TODO 클립보드는 Hook 형태로 메소드만 제공해주는 기능으로 구현해야함
+    // 실제로는 썸네일 컴포넌트 1개와 클립보드 기능을 제공해주게
     // const { instance } = getInstance();
     const { usableCapacity } = toRefs(props);
-    const clipboardImages: any[] = [];
-    const usableCapacityComputed = computed(() => {
-      return usableCapacity.value;
-    });
-    const state = reactive({
-      clipboardImages,
-      usableCapacityComputed,
-      uploadSize: 0,
-    });
 
-    const generateRandomHash = () => {
-      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-      let result = '';
-      for (let i = 0; i < 4; i++) {
-        result += chars.charAt(Math.floor(Math.random() * chars.length));
-      }
-      return result;
-    };
-    const handleRemoveImg = (idx) => {
-      state.uploadSize -= state.clipboardImages[idx].size;
-      state.clipboardImages = state.clipboardImages.filter((item, inIdx) => idx !== inIdx);
-      imageUploadComputed.value = state.clipboardImages.length;
-      // emit('remove-clipboard-images', idx)
-    };
-    const handlePasteImage = async (e) => {
-      const clipboardItems = e.clipboardData.files;
-      for (const clipboardItem of iterImageSizeCheck(clipboardItems)) {
-        if (clipboardItem) {
-          let blob;
-          if (clipboardItem.type?.startsWith('image/')) {
-            // For files from `e.clipboardData.files`.
-            blob = clipboardItem;
-            // Do something with the blob.
-            appendImage(blob, true);
-          } else {
-            // For files from `navigator.clipboard.read()`.
-            const imageTypes = clipboardItem.types?.filter((type) => type.startsWith('image/'));
-            for (const imageType of imageTypes) {
-              blob = await clipboardItem.getType(imageType);
-              // Do something with the blob.
-              appendImage(blob, true);
-            }
-          }
-        } else {
+    const f = useClipboard(usableCapacity)
 
-          break;
-        }
-      }
-      imageUploadComputed.value = state.clipboardImages.length;
-    };
-    const appendImage = (blob: any, isClipboard = false) => {
-      if (state.clipboardImages) {
-        if (isClipboard) {
-          const name = blob.name.split('.');
-          const extension = name.pop();
-          const file = new File(
-            [blob],
-            `${name.join('.')}-${new Date().getTime()}.${extension}`,
-            {
-              type: blob.type,
-            }
-          );
-          state.clipboardImages = state.clipboardImages.concat(file);
-        } else {
-          state.clipboardImages = state.clipboardImages.concat(blob);
-        }
-      }
-    };
-
-    function* iterImageSizeCheck(files) {
-      let fileSize = state.uploadSize;
-      for (const file of files) {
-        fileSize += file.size;
-        if (state.usableCapacityComputed - fileSize < 0) {
-          fileSize -= file.size;
-          yield false;
-        } else {
-          yield file;
-        }
-      }
-      state.uploadSize = fileSize;
-    }
-    const handleAddImages = (e) => {
-      try {
-        const allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp'];
-        const files = e.target.files;
-        for (const file of iterImageSizeCheck(files)) {
-          if (file) {
-            appendImage(file);
-          } else {
-            break;
-          }
-        }
-      } catch (e: any) {
-        console.error(e.message);
-      } finally {
-        e.target.value = '';
-        imageUploadComputed.value = state.clipboardImages.length;
-      }
-    };
-
-    onMounted(() => {
-      window.addEventListener('paste', handlePasteImage);
-    });
-    onUnmounted(() => {
-      window.removeEventListener('paste', handlePasteImage);
-    });
-    const imageUploadComputed = computed({
-      get: () => state.clipboardImages.length,
-      set: (value) => {
-        console.log('uplaod..', value);
-        emit('add-image', value);
-      },
-    });
-    const handleResetImages = () => {
-      state.clipboardImages = [];
-      imageUploadComputed.value = state.clipboardImages.length;
-    };
 
     return {
-      ...toRefs(state),
-      handleRemoveImg,
-      handleAddImages,
-      imageUploadComputed,
-      handleResetImages,
+      // ...toRefs(state),
+      ...f,
+      // handleRemoveImg,
+      // handleAddImages,
+      // imageUploadComputed,
+      // handleResetImages,
     };
   },
 });
