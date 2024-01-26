@@ -1,7 +1,8 @@
 {
   "name": "vue-clipboard",
-  "version": "0.0.0",
-  "private": true,
+  "version": "1.0.0",
+  "description": "vue clipboard, thumbnail",
+  "private": false,
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -13,6 +14,14 @@
   "dependencies": {
     "vue": "^3.3.11"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fenrirD/vue-clipboard.git"
+  },
+  "keywords": [
+    "Vue.js"
+  ],
+  "author": "fenrir93",
   "devDependencies": {
     "@tsconfig/node18": "^18.2.2",
     "@types/node": "^18.19.3",

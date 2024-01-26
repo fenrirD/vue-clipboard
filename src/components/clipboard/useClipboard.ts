@@ -56,7 +56,8 @@ export default function useClipboard(usableCapacity:number) {
    * @param {boolean} isClipboard
    */
   const appendImage = (blob: any, isClipboard = false) => {
-    if (state.clipboardImages) {
+    const {clipboardImages, }  = state;
+    if (clipboardImages) {
       if (isClipboard) {
         const name = blob.name.split('.');
         const extension = name.pop();
@@ -67,9 +68,9 @@ export default function useClipboard(usableCapacity:number) {
             type: blob.type,
           }
         );
-        state.clipboardImages = state.clipboardImages.concat(file);
+        state.clipboardImages = clipboardImages.concat(file);
       } else {
-        state.clipboardImages = state.clipboardImages.concat(blob);
+        state.clipboardImages = clipboardImages.concat(blob);
       }
     }
   };
@@ -87,6 +88,11 @@ export default function useClipboard(usableCapacity:number) {
     }
     state.uploadSize = fileSize;
   }
+
+  /**
+   * 수동으로 이미지를 등록할 경우에 대한 타입 체크도 해야한다.
+   * @param e
+   */
   const handleAddImages = (e) => {
     try {
       const allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp'];
